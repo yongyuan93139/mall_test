@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户登录</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+    .login-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #42b983;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #369f6b;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="login-container">
+      <h2>用户登录</h2>
+      <form @submit.prevent="login">
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input type="text" id="username" v-model="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input type="password" id="password" v-model="password" required>
+        </div>
+        <button type="submit">登录</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+    
+    createApp({
+      data() {
+        return {
+          username: '',
+          password: ''
+        }
+      },
+      methods: {
+        login() {
+          axios.post('/api/login', {
+            username: this.username,
+            password: this.password
+          }, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(response => {
+            window.location.href = '/product.html';
+          })
+          .catch(error => {
+            if (error.response) {
+              alert('登录失败: ' + (error.response.data?.message || error.response.statusText));
+            } else {
+              alert('网络错误: ' + error.message);
+            }
+          });
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
